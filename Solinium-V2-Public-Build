@@ -37,7 +37,7 @@ local cmds = {aliases = {}}
 local loadtime = os.clock()
 local prefix = ">"
 local dcmds = {}
-local autorun = {"antikick","gearblacklist","obbykill","antipunish","antikill","antispeed","antisetgrav"}
+local autorun = {"antikick","gearblacklist","obbykill","antipunish","antikill","antispeed","antisetgrav","antimessage"}
 local vars = {purgemethod = "rocket"}
 local hatbanned = {}
 local wlst = {} -- put whitelisted names here
@@ -442,6 +442,7 @@ local function req(url)
     else
         return game:HttpGet(url)
     end
+    --return game:HttpGet(url)
 end
 local function getgp(plr)
     local uid = plr.UserId
@@ -625,9 +626,11 @@ local function move(part, coords)
         workspace.FallenPartsDestroyHeight = 0/0
         coroutine.wrap(function()
             repeat
-                game:GetService("RunService").Heartbeat:wait()
-                game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
-                game.Players.LocalPlayer.Character.HumanoidRootPart.RotVelocity = Vector3.new(0, 0, 0)
+                if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.RotVelocity = Vector3.new(0, 0, 0)
+                    game:GetService("RunService").Heartbeat:wait()
+                end
             until not vars.ivorymoving
         end)()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = coords * CFrame.new(-1 * (part.Size.X / 2) - (game.Players.LocalPlayer.Character["Torso"].Size.X / 2), 0, 0)
@@ -945,6 +948,38 @@ addcmd("unantijail", {args = {"player"}, aliases = {}, desc = "Turns Off Anti Ja
     end
 end)
 
+addcmd("delete", {args = {"*player*"}, aliases = {}, desc = "Attempts to delete a player from Workspace."}, function(args, text)
+    for i,v in gp(args[1]) do
+        coroutine.wrap(function()
+            if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+                game.Players:Chat("gear me 212296936")
+                repeat task.wait() until game.Players.LocalPlayer.Backpack:FindFirstChild("RedHyperLaser")
+                local gun = game.Players.LocalPlayer.Backpack:FindFirstChild("RedHyperLaser")
+                game.Players:Chat("respawn "..v.Name.." fuck")
+                v.CharacterAdded:Wait()
+                repeat task.wait() until v.Character and v.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("Torso")
+                game.Players:Chat("freeze "..v.Name.." fuck")
+                repeat task.wait() until v.Character:FindFirstChild("ice") and v.Character.Humanoid.WalkSpeed == 0
+                game.Players:Chat("speed "..v.Name.." 16")
+                repeat task.wait() until v.Character.Humanoid.WalkSpeed == 16
+                workspace.Gravity = 0
+                game.Players.LocalPlayer.Character.Humanoid.PlatformStand = true
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -3) * CFrame.Angles(0, math.rad(180), 0)
+                task.wait(.23)
+                gun.Parent = game.Players.LocalPlayer.Character
+                coroutine.wrap(function()
+                    gun:WaitForChild("ServerControl"):InvokeServer("Click", true, v.Character.Torso.Position)
+                end)()     
+                repeat task.wait() until v.Character:GetDescendants("SelectionBox")
+                task.wait()
+                game.Players:Chat("punish "..v.Name.." fuck")
+                game.Players:Chat("respawn me fuck")
+                workspace.Gravity = 196.2
+            end
+        end)()
+    end
+end)
+
 addcmd("run", {args = {"*code*"}, aliases = {"lua", "execute", "s"}, desc = "Runs Lua Code"}, function(args, text)
     local code = string.sub(text, text:split(" ")[1]:len()+2)
     local s,e = pcall(loadstring(code))
@@ -1195,6 +1230,7 @@ addcmd("rocketkick", {args = {"*player*"}, aliases = {"rkick", "rk"}, desc = "At
         vars.rocketkicking = true
         game.Players:Chat("setgrav "..v.Name.." 5000")
         game.Players:Chat("speed "..v.Name.." 0")
+        game.Players:Chat("jail/"..v.Name.." fuck")
         if v.Character.Humanoid.WalkSpeed > 0 then
             v.Character.Humanoid:GetPropertyChangedSignal("WalkSpeed"):Wait()
         end
@@ -1306,6 +1342,49 @@ addcmd("antikick", {args = {}, aliases = {}, desc = "Prevents Rocket, Dog & Hat 
 				part:Destroy()
 			end
 		end
+
+	end
+end)
+
+addcmd("antimessage", {args = {}, aliases = {}, desc = "Prevents Messages From Appearing"}, function()
+    if not cons.antimessage and not cons.antimessage2 then
+		cons.antimessage = workspace.DescendantAdded:Connect(function(part)
+			if part:IsA("Message") or part:IsA("Hint") then
+                game:GetService("RunService").RenderStepped:Wait()
+                part:Destroy()
+            end
+		end)
+        cons.antimessage2 = game.Players.LocalPlayer.PlayerGui.ChildAdded:Connect(function(p)
+            if p:IsA("ScreenGui") then
+                if p.Name == "MessageGUI" or p.Name == "HintGUI" then
+                    p.Enabled = false
+                    game:GetService("RunService").RenderStepped:Wait()
+                    p:Destroy()
+                end
+            end
+        end)
+		for i,part in workspace:GetDescendants() do
+			if part:IsA("Message") then
+                part:Destroy()
+            end
+		end
+        for i,p in workspace:GetDescendants() do
+			if p:IsA("ScreenGui") then
+                if p.Name == "MessageGUI" or p.Name == "HintGUI" then
+                    p.Enabled = false
+                    p:Destroy()
+                end
+            end
+		end
+	end
+end)
+
+addcmd("unantimessage", {args = {}, aliases = {}, desc = "Disables AntiMessage"}, function()
+    if cons.antimessage and cons.antimessage2 then
+        cons.antimessage:Disconnect()
+        cons.antimessage = nil
+        cons.antimessage2:Disconnect()
+        cons.antimessage2 = nil
 	end
 end)
 
@@ -1435,7 +1514,7 @@ cons[#cons+1] = game.Players.PlayerAdded:Connect(function(plr)
         local Persons = Instance.new("StringValue")
         Perm.Name = "Perm"
         Persons.Name = "Persons299"
-        if not gpstats.Perm == nil then
+        if gpstats.Perm == nil then
             Perm.Value = "?"
         elseif gpstats.Perm == true then
             Perm.Value = "Yes"
@@ -1478,7 +1557,7 @@ coroutine.wrap(function()
             local Persons = Instance.new("StringValue")
             Perm.Name = "Perm"
             Persons.Name = "Persons299"
-            if not gpstats.Perm == nil then
+            if gpstats.Perm == nil then
                 Perm.Value = "?"
             elseif gpstats.Perm == true then
                 Perm.Value = "Yes"
