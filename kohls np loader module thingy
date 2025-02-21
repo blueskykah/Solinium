@@ -1,3 +1,5 @@
+repeat task.wait() until game:IsLoaded() == true and game.Workspace
+task.wait(5)
 local users = {
     "wrydioda4"
 }
