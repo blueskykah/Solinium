@@ -1,0 +1,9 @@
+local slungus = {}
+
+slungus["goog"] = {
+  func = function()
+    print("goggus")
+  end
+}
+
+return slungus
