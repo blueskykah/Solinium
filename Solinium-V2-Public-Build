@@ -1189,7 +1189,7 @@ addcmd("obbykill", {args = {"on/off"}, aliases = {}, desc = "Toggles The Obby's 
 end)
 
 
-addcmd("hatkick", {args = {"*player*", "pm rounds"}, aliases = {"kick", "hcrash"}, desc = "Crashes A Player. The Second Arg Will PMKick The Player For A Set Number Of Rounds (each round consisting of 100 pms) Every 5 Seconds"}, function(args)
+--[[addcmd("hatkick", {args = {"*player*", "pm rounds"}, aliases = {"kick", "hcrash"}, desc = "(PATCHED) Crashes A Player. The Second Arg Will PMKick The Player For A Set Number Of Rounds (each round consisting of 100 pms) Every 5 Seconds"}, function(args)
     for i,v in gp(args[1]) do
         game.Players:Chat("respawn "..v.Name.."                                              FUCK")
         v.CharacterAdded:Wait()
@@ -1224,7 +1224,7 @@ addcmd("hatkick", {args = {"*player*", "pm rounds"}, aliases = {"kick", "hcrash"
         end)
         task.wait(5.5)
     end
-end)
+end)]]
 
 addcmd("pmlag", {args = {"*player*", "*seconds*"}, aliases = {"pl"}, desc = ""}, function(args)
     for i,v in gp(args[1]) do
