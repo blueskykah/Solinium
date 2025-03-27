@@ -39,6 +39,7 @@ local prefix = ">"
 local dcmds = {}
 local autorun = {"antikick","gearblacklist","obbykill","antipunish","antikill","antispeed","antisetgrav","antimessage"}
 local vars = {purgemethod = "rocket"}
+local spamtable = {}
 local hatbanned = {}
 local wlst = {} -- put whitelisted names here
 local whitelisted = {} -- don't put anything here
@@ -990,6 +991,29 @@ addcmd("run", {args = {"*code*"}, aliases = {"lua", "execute", "s"}, desc = "Run
     end
 end)
 
+addcmd("super", {args = {"*text*"}, aliases = {}, desc = "Spams a string 100 times in a frame"}, function(args, text)
+    local sts = string.sub(text, text:split(" ")[1]:len()+2)
+    for i=1,100 do
+        game.Players:Chat(sts)
+    end
+end)
+
+addcmd("spam", {args = {"*text*"}, aliases = {}, desc = "Spams a string"}, function(args, text)
+    local sts = string.sub(text, text:split(" ")[1]:len()+2)
+    spamtable[#spamtable + 1] = game:GetService("RunService").RenderStepped:Connect(function()
+        game.Players:Chat(sts)
+    end)
+end)
+
+addcmd("unspam", {args = {}, aliases = {}, desc = "Stops all spam"}, function(args, text)
+    for i,v in spamtable do
+        if v.Connected then
+            v:Disconnect()
+        end
+        v = nil
+    end
+end)
+
 addcmd("savemap", {args = {"*name*"}, aliases = {}, desc = "Saves Map Parts To Be Loaded Via loadmap"}, function(args, text)
     local mapname = string.sub(text, text:split(" ")[1]:len()+2)
     if not isfile("Solinium-V2/Saved-Builds/"..mapname..".json") then
@@ -1202,7 +1226,7 @@ addcmd("hatkick", {args = {"*player*", "pm rounds"}, aliases = {"kick", "hcrash"
     end
 end)
 
-addcmd("pmlag", {args = {"*player*", "*pm rounds*"}, aliases = {"pl"}, desc = ""}, function(args)
+addcmd("pmlag", {args = {"*player*", "*seconds*"}, aliases = {"pl"}, desc = ""}, function(args)
     for i,v in gp(args[1]) do
         game.Players:Chat("blind "..v.Name.." fuck")
         game.Players:Chat("freeze "..v.Name.." fuck")
@@ -1210,20 +1234,20 @@ addcmd("pmlag", {args = {"*player*", "*pm rounds*"}, aliases = {"pl"}, desc = ""
         game.Players:Chat("name "..v.Name.." [Solinium-V2]\nLagging Player...")
         task.wait()
         if type(tonumber(args[2])) == "number" then
-            notif("PMKicking "..v.Name.." For "..args[2].." Round(s)", 3)
-            for i=1,tonumber(args[2]) do
+            spamtable.pmlagging = game:GetService("RunService").RenderStepped:Connect(function()
                 if not table.find(game.Players:GetPlayers(), v) then
-                    break
+                    spamtable.pmlagging:Disconnect()
+                    spamtable.pmlagging = nil
                 end
-                for i=1,100 do
-                    game.Players:Chat("pm "..v.Name.." 🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️")
-                end
-                task.wait(5)
-            end
+                game.Players:Chat("pm "..v.Name.." 🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️")
+            end)
+            task.delay(tonumber(args[2]), function()
+                spamtable.pmlagging:Disconnect()
+                spamtable.pmlagging = nil
+            end)
         end
     end
 end)
-
 
 addcmd("rocketkick", {args = {"*player*"}, aliases = {"rkick", "rk"}, desc = "Attempts To Crash A Player Using rocket/ (REQUIRES PERSONS299 GAMEPASS)"}, function(args) -- kinda shitty
     for i,v in gp(args[1]) do
