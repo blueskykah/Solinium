@@ -1,3 +1,7 @@
+-- this sucks lol js use leaderstats
+
+
+
 game.StarterGui:SetCoreGuiEnabled("PlayerList", false)
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.ResetOnSpawn = false
