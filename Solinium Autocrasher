@@ -1,14 +1,15 @@
 --[[
     GUIDE TO GETTING PLAYERTOKENS
-   
+   
     Join an empty game and run the code below.
-   
+   
     setclipboard(game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true"))
-   
+   
     Paste the code it copied into Notepad or your favorite text editor and look for a string that looks something like this: "5568CCBED82CD30E127119030810CE98"
 
     After you copied it, input it into the local variable 'playertoken' below.
 --]]
+
 
 
 -- crasher made by notoriousknocks on discord
@@ -31,18 +32,31 @@ function hop()
                 "https://games.roblox.com/v1/games/115670532/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true"
             )
         )
-        if nbc["errors"] or bc["errors"] then
-            print("Request Denied, Retrying In 5 Seconds")
+        if nbc["errors"] and bc["errors"] then
+            print("Both Requests Were Denied, Retrying In 1.5 Seconds")
             task.spawn(function()
                 ratelimited = true
-                task.wait(5)
+                task.wait(1.5)
                 ratelimited = false
             end)
             return
         end
-        print("Checking Servers...")
-        local nbcdata = nbc.data
-        local bcdata = bc.data
+        local nbcdata
+        local bcdata
+        if nbc.data then
+            print("NBC went through.")
+            nbcdata = nbc.data
+        else
+            print("NBC request was denied.")
+            nbcdata = {}
+        end
+        if bc.data then
+            print("BC went through.")
+            bcdata = bc.data
+        else
+            print("BC request was denied.")
+            bcdata = {}
+        end
 
         local viable = {}
 
@@ -70,7 +84,7 @@ function hop()
                 game:GetService("TeleportService"):TeleportToPlaceInstance(115670532, servertohop["Job"])
             end
         else
-            print("No Servers...")
+            print("No Servers Found.")
         end
     end
 end
@@ -91,6 +105,12 @@ for i, v in pairs(game.Players:GetPlayers()) do
 end
 
 if not found then
+    game.Players:Chat("music 9044604287")
+    game.Players:Chat("fogend nil")
+    game.Players:Chat("fogcolor 0 0 0")
+    game.Players:Chat("time -")
+    game.Players:Chat("h/\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe Kohls games by agspureiam are currently being crashed.\n\nIf you do not wish to be crashed\nJoin a private server or play an alternative such as Kohls Admin House NBC [Legacy]")
+    task.wait(0.4)
     game.Players:Chat("respawn all fuck")
     for i = 1, 5 do
         game.Players:Chat("size all .3")
@@ -115,9 +135,9 @@ if not found then
             end
         end
     )
-    task.wait(2)
+    task.wait(3)
     repeat
         hop()
-        task.wait()
+        task.wait(1.5)
     until false
 end
