@@ -1,1 +1,6 @@
-print("wagoogus")
+task.spawn(function()
+    if not _G.Legacychatadmins then
+        repeat task.wait() until _G.Legacychatadmins
+    end
+    table.insert(_G.Legacychatadmins, "me_Knocks")
+end)
